@@ -50,8 +50,8 @@ def modify_book(book_id: str, book: UpdateBookSchema):
   return {"message": "Book updated successfully"}
 
 @router.delete("/books/{book_id}")
-async def remove_book(book_id: str):
-    if not await delete_book(book_id):
+def remove_book(book_id: str):
+    if not delete_book(book_id):
         raise HTTPException(status_code=404, detail="Book not found")
     return {"message": "Book deleted successfully"}
 

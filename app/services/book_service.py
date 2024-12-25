@@ -78,8 +78,8 @@ def update_book(book_id: str, book_data: dict) -> bool:
   return update_result.modified_count > 0
 
 # Delete book
-async def delete_book(book_id: str) -> bool:
-    delete_result = await books_collection.delete_one({"_id": ObjectId(book_id)})
+def delete_book(book_id: str) -> bool:
+    delete_result = books_collection.delete_one({"_id": ObjectId(book_id)})
     return delete_result.deleted_count > 0
 
 def get_categories() -> List[str]:
