@@ -88,7 +88,7 @@ book_management/
 | POST   | `/api/books`           | Add a new book         |
 | GET    | `/api/books`           | Retrieve all books     |
 | GET    | `/api/books/{book_id}` | Retrieve a single book |
-| PUT    | `/api/books/{book_id}` | Update a book by ID    |
+| PUT    | `/api/book/{book_id}` | Update a book by ID    |
 | DELETE | `/api/books/{book_id}` | Delete a book by ID    |
 
 ---
@@ -102,11 +102,19 @@ book_management/
 ```json
 POST /api/books
 {
-  "title": "The Great Gatsby",
-  "ISBN":"3485832",
-  "author": "F. Scott Fitzgerald",
-  "description": "A novel set in the Jazz Age",
-  "year": 1925
+  "ISBN": "string",
+  "availability": "string",
+  "brand": "string",
+  "delivery": [
+    "string"
+  ],
+  "description": "string",
+  "price": 0,
+  "image_url": "string",
+  "rating": "string",
+  "reviews_count": 0,
+  "title": "string",
+  "categories": "string"
 }
 ```
 
@@ -114,12 +122,19 @@ POST /api/books
 
 ```json
 {
-  "id": "60b8d295f4d2b9a2f828c2b1",
-  "title": "The Great Gatsby",
-  "ISBN": "3485832",
-  "author": "F. Scott Fitzgerald",
-  "description": "A novel set in the Jazz Age",
-  "year": 1925
+  "ISBN": "string",
+  "availability": "string",
+  "brand": "string",
+  "delivery": [
+    "string"
+  ],
+  "description": "string",
+  "price": 0,
+  "image_url": "string",
+  "rating": "string",
+  "reviews_count": 0,
+  "title": "string",
+  "categories": "string"
 }
 ```
 
@@ -134,16 +149,36 @@ GET /api/books
 **Response**:
 
 ```json
-[
-  {
-    "id": "60b8d295f4d2b9a2f828c2b1",
-    "title": "The Great Gatsby",
-    "ISBN": "3485832",
-    "author": "F. Scott Fitzgerald",
-    "description": "A novel set in the Jazz Age",
-    "year": 1925
-  }
-]
+{
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 1
+  },
+  "data": [
+    {
+      "_id": "67694574fa8bec94aab09a37",
+      "ISBN": "9780007513765",
+      "availability": "In Stock.",
+      "brand": "Drew Daywalt",
+      "delivery": [
+        "FREE delivery Tuesday, December 28 if you spend $25 on items shipped by Amazon",
+        "Arrives after Christmas. Need a gift sooner? Send an Amazon Gift Card instantly by email or SMS.",
+        "FREE delivery Wednesday, December 29 if you spend $25 on items shipped by Amazon",
+        "Arrives after Christmas. Need a gift sooner? Send an Amazon Gift Card instantly by email or SMS."
+      ],
+      "description": "Fiction book for children",
+      "price": 12.08,
+      "image_url": "https://images-na.ssl-images-amazon.com/images/I/51q21jP9MtL._SX218_BO1,204,203,200_QL40_ML2_.jpg",
+      "rating": "4.8 out of 5 stars",
+      "reviews_count": 16628,
+      "title": "THE DAYS THE CRAYONS QUIT",
+      "categories": "Children's Books",
+      "createdAt": "2024-12-23T11:11:48.943000",
+      "updatedAt": "2024-12-23T11:11:48.943000"
+    }
+  ]
+}
 ```
 
 ---
