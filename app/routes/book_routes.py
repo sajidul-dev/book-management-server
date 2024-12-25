@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, HTTPException
 from app.models.book_model import BookModel
 from app.schemas.book_schema import UpdateBookSchema
-from app.services.book_service import add_book, get_books, get_book, update_book, delete_book
+from app.services.book_service import add_book, get_books, get_book, update_book, delete_book, get_categories
 from typing import Optional
 
 
@@ -45,7 +45,6 @@ def read_book(book_id: str):
 
 @router.put("/book/{book_id}")
 def modify_book(book_id: str, book: UpdateBookSchema):
-  print(book.dict(exclude_unset=True), "Incoming update data")
   if not update_book(book_id, book.dict(exclude_unset=True)):
       raise HTTPException(status_code=404, detail="Book not found or no changes made")
   return {"message": "Book updated successfully"}
@@ -55,3 +54,8 @@ async def remove_book(book_id: str):
     if not await delete_book(book_id):
         raise HTTPException(status_code=404, detail="Book not found")
     return {"message": "Book deleted successfully"}
+
+@router.get("/categories")
+def get_all_categories():
+    categories = get_categories()
+    return {"categories": categories}

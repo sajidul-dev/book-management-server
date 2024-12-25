@@ -7,6 +7,10 @@ from fastapi import FastAPI, Query, HTTPException, Depends
 
 # Add book
 def add_book(book_data: dict) -> dict:
+    # Check if the ISBN already exists
+  existing_book = books_collection.find_one({"ISBN": book_data["ISBN"]})
+  if existing_book:
+      raise HTTPException(status_code=400, detail="ISBN already exists")
   book_data["createdAt"] = datetime.now(timezone.utc)   
   book_data["updatedAt"] = datetime.now(timezone.utc)   
   book = books_collection.insert_one(book_data)
@@ -29,7 +33,6 @@ def get_books(
         query["$or"] = [
             {"title": {"$regex": search, "$options": "i"}},
             {"brand": {"$regex": search, "$options": "i"}},
-            {"seller_name": {"$regex": search, "$options": "i"}},
         ]
 
     if category:
@@ -69,7 +72,6 @@ def get_book(book_id: str) -> dict:
 # Update book
 def update_book(book_id: str, book_data: dict) -> bool:
   book_data["updatedAt"] = datetime.now(timezone.utc)
-  print(book_data,"Book data")   
   update_result = books_collection.update_one(
       {"_id": ObjectId(book_id)}, {"$set": book_data}
   )
@@ -79,3 +81,7 @@ def update_book(book_id: str, book_data: dict) -> bool:
 async def delete_book(book_id: str) -> bool:
     delete_result = await books_collection.delete_one({"_id": ObjectId(book_id)})
     return delete_result.deleted_count > 0
+
+def get_categories() -> List[str]:
+    categories = books_collection.distinct("categories")
+    return categories
