@@ -82,9 +82,9 @@ def retrieve_books():
 @router.put("/update-brand-to-author")
 def update_brand_to_author():
     try:
-        # Run the MongoDB query
+        
         result = books_collection.update_many(
-            {"ISBN": {"$exists": True}},  # Condition to find documents with "brand"
+            {"ISBN": {"$exists": True}},  
             [
                 {
                     "$set": {
@@ -97,7 +97,7 @@ def update_brand_to_author():
                         }
                     }
                 },
-                {"$unset": "ISBN"},  # Remove the old field
+                {"$unset": "ISBN"},  
             ],
         )
 
