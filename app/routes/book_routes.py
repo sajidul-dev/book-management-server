@@ -3,6 +3,8 @@ from app.models.book_model import BookModel
 from app.schemas.book_schema import UpdateBookSchema
 from app.services.book_service import add_book, get_books, get_book, update_book, delete_book, get_categories
 from typing import Optional
+import requests
+from app.core.database import books_collection
 
 
 router = APIRouter()
@@ -59,3 +61,51 @@ def remove_book(book_id: str):
 def get_all_categories():
     categories = get_categories()
     return {"categories": categories}
+
+@router.post("/retrieve-books")
+def retrieve_books():
+    url="https://openlibrary.org/search.json?q=the+lord+of+the+rings"
+    response = requests.get(url)
+    data = response.json()
+    books = []
+    for doc in data.get("docs", []):
+        book = {
+            "title": doc.get("title"),
+            "isbn": doc.get("isbn"),
+            "author_name": doc.get("author_name")
+        }
+        saved_book=add_book(book)
+        books.append(saved_book)
+    
+    return {"books": books}
+    
+@router.put("/update-brand-to-author")
+def update_brand_to_author():
+    try:
+        # Run the MongoDB query
+        result = books_collection.update_many(
+            {"ISBN": {"$exists": True}},  # Condition to find documents with "brand"
+            [
+                {
+                    "$set": {
+                        "isbn": {
+                            "$cond": {
+                                "if": {"$isArray": "$ISBN"},
+                                "then": "$ISBN",
+                                "else": ["$ISBN"],
+                            }
+                        }
+                    }
+                },
+                {"$unset": "ISBN"},  # Remove the old field
+            ],
+        )
+
+        return {
+            "message": "Update operation completed",
+            "matched_count": result.matched_count,
+            "modified_count": result.modified_count,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

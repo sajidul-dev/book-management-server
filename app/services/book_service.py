@@ -3,17 +3,17 @@ from app.helpers.book_helper import book_helper
 from bson.objectid import ObjectId
 from datetime import datetime,timezone
 from typing import Optional, List
-from fastapi import FastAPI, Query, HTTPException, Depends
+from fastapi import  HTTPException, Depends
 
 # Add book
 def add_book(book_data: dict) -> dict:
-    # Check if the ISBN already exists
-  existing_book = books_collection.find_one({"ISBN": book_data["ISBN"]})
-  if existing_book:
-      raise HTTPException(status_code=400, detail="ISBN already exists")
-  book_data["createdAt"] = datetime.now(timezone.utc)   
-  book_data["updatedAt"] = datetime.now(timezone.utc)   
-  book = books_collection.insert_one(book_data)
+
+  try:
+    book_data["createdAt"] = datetime.now(timezone.utc)   
+    book_data["updatedAt"] = datetime.now(timezone.utc)   
+    book = books_collection.insert_one(book_data)
+  except Exception as e:
+    raise HTTPException(status_code=400, detail=Exception)
   return book_helper(books_collection.find_one({"_id": book.inserted_id}))
 
 # Get all books
@@ -32,7 +32,7 @@ def get_books(
     if search:
         query["$or"] = [
             {"title": {"$regex": search, "$options": "i"}},
-            {"brand": {"$regex": search, "$options": "i"}},
+            {"author_name": {"$regex": search, "$options": "i"}},
         ]
 
     if category:
@@ -49,10 +49,9 @@ def get_books(
     sort_criteria = [(sort_by, sort_order)] if sort_by else None
 
     total = books_collection.count_documents(query)
-    books_cursor = books_collection.find(query).skip(skip).limit(limit)
+    books_cursor = books_collection.find(query,projection={"_id":True,"title": True, "author_name": True, "isbn": True}).skip(skip).limit(limit)
     if sort_criteria:
         books_cursor = books_cursor.sort(sort_criteria)
-
     books = [book_helper(book) for book in books_cursor]
 
     return {

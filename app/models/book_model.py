@@ -3,16 +3,8 @@ from typing import List, Optional
 from datetime import datetime
 
 class BookModel(BaseModel):
-    ISBN: str
-    availability: str
-    brand: str
-    delivery: List[str]
-    description: Optional[str] = None
-    price: float
-    image_url: str
-    rating: str
-    reviews_count: int
+    isbn: List[str]
+    atuhor_name: List[str]
     title: str
-    categories: str
     createdAt: Optional[datetime] = Field(default_factory=datetime.utcnow)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.utcnow)

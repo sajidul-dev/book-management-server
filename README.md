@@ -83,13 +83,14 @@ book_management/
 
 ### Endpoints
 
-| Method | Endpoint               | Description            |
-| ------ | ---------------------- | ---------------------- |
-| POST   | `/api/books`           | Add a new book         |
-| GET    | `/api/books`           | Retrieve all books     |
-| GET    | `/api/books/{book_id}` | Retrieve a single book |
-| PUT    | `/api/book/{book_id}` | Update a book by ID    |
-| DELETE | `/api/books/{book_id}` | Delete a book by ID    |
+| Method | Endpoint                  | Description                             |
+| ------ | ------------------------- | --------------------------------------- |
+| POST   | `/api/v1/books`           | Add a new book                          |
+| GET    | `/api/v1/books`           | Retrieve all books                      |
+| GET    | `/api/v1/books/{book_id}` | Retrieve a single book                  |
+| PUT    | `/api/v1/book/{book_id}`  | Update a book by ID                     |
+| DELETE | `/api/v1/books/{book_id}` | Delete a book by ID                     |
+| PUT    | `/api/v1/retrieve-books`  | Get Books from API and store it into DB |
 
 ---
 
@@ -125,9 +126,7 @@ POST /api/books
   "ISBN": "string",
   "availability": "string",
   "brand": "string",
-  "delivery": [
-    "string"
-  ],
+  "delivery": ["string"],
   "description": "string",
   "price": 0,
   "image_url": "string",
