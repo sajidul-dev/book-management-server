@@ -72,12 +72,13 @@ def retrieve_books():
         book = {
             "title": doc.get("title"),
             "isbn": doc.get("isbn"),
-            "author_name": doc.get("author_name")
+            "author_name": doc.get("author_name"),
+            "category": doc.get("subject",[]),
         }
         saved_book=add_book(book)
         books.append(saved_book)
     
-    return {"books": books}
+    return {"books": data}
     
 @router.put("/update-brand-to-author")
 def update_brand_to_author():

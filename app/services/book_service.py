@@ -3,7 +3,7 @@ from app.helpers.book_helper import book_helper
 from bson.objectid import ObjectId
 from datetime import datetime,timezone
 from typing import Optional, List
-from fastapi import  HTTPException, Depends
+from fastapi import  HTTPException
 
 # Add book
 def add_book(book_data: dict) -> dict:
@@ -36,7 +36,7 @@ def get_books(
         ]
 
     if category:
-        query["categories"] = category
+        query["category"] = category
 
     if min_price is not None:
         query["price"] = {"$gte": min_price}
@@ -49,7 +49,7 @@ def get_books(
     sort_criteria = [(sort_by, sort_order)] if sort_by else None
 
     total = books_collection.count_documents(query)
-    books_cursor = books_collection.find(query,projection={"_id":True,"title": True, "author_name": True, "isbn": True}).skip(skip).limit(limit)
+    books_cursor = books_collection.find(query,projection={"_id":True,"title": True, "author_name": True, "isbn": True, "category":True}).skip(skip).limit(limit)
     if sort_criteria:
         books_cursor = books_cursor.sort(sort_criteria)
     books = [book_helper(book) for book in books_cursor]
@@ -82,5 +82,5 @@ def delete_book(book_id: str) -> bool:
     return delete_result.deleted_count > 0
 
 def get_categories() -> List[str]:
-    categories = books_collection.distinct("categories")
+    categories = books_collection.distinct("category")
     return categories
